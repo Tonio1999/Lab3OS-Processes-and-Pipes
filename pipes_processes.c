@@ -7,8 +7,8 @@
   
 int main() 
 {     
-    int first_pipe[2]; //variable declare
-    int second_pipe[2];
+    int first_pipe[2];  // variable declarations
+    int second_pipe[2];    
     char fixed_string[] = "howard.edu", fixed_string_2[] = "gobison.org"; 
     char input_string[100]; 
     pid_t p; 
@@ -24,7 +24,7 @@ int main()
         return 1; 
     } 
   
-    printf("Enter a string to concatenate:"); // print the string should show up when running
+    printf("Enter a string to concatenate:"); // user prints name
     scanf("%s", input_string); 
     p = fork(); 
   
@@ -33,45 +33,42 @@ int main()
         fprintf(stderr, "fork Failed" ); 
         return 1; 
     } 
-   
+  
     else if (p > 0) 
     { 
-        char concatenated_string[100]; 
-  
+        char concatenated_string[100];   
         close(first_pipe[0]);  
         write(first_pipe[1], input_string, strlen(input_string)+1); 
-        close(first_pipe[1]); 
-  
-        wait(NULL); 
-  
+        close(first_pipe[1]);  
+        wait(NULL);   
         close(second_pipe[1]); 
         read(second_pipe[0], concatenated_string, 100);
         
-        int k = string_length(concatenated_string); 
+        int k = strlen(concatenated_string); 
         int i; 
-        for (i=0; i<string_length(fixed_string_2); i++) 
-            concatenated_string[k++] = fixed_string_2[i]; 
+        for (i=0; i<strlen(fixed_string_2); i++) 
+           concatenated_string[k++] = fixed_string_2[i]; 
         concatenated_string[k] = '\0';   
         
-        printf("Concatenated string %s\n", concatenated_string); // The string will print what user input
-        close(first_pipe[0]); 
+        printf("Concatenated string %s\n", concatenated_string); // prints what user types
+        close(second_pipe[0]); 
     } 
   
     else
     { 
-        close(first_pipe[1]);  
+        close(first_pipe[1]);   
         char concatenated_string[100]; 
         read(first_pipe[0], concatenated_string, 100); 
-        int k = string_length(concatenated_string); 
+  
+        int k = strlen(concatenated_string); 
         int i; 
-      
-        for (i=0; i<string_length(fixed_string); i++) 
-            concatenated_string[k++] = fixed_string[i];   
-        concatenated_string[k] = '\0';  
-      
+        for (i=0; i<strlen(fixed_string); i++) 
+            concatenated_string[k++] = fixed_string[i]; 
+  
+        concatenated_string[k] = '\0';   
         close(first_pipe[0]); 
-        close(second_pipe[0]); 
-        write(second_pipe[1], concatenated_string, string_length(concatenated_string)+1); 
+        close(second_pipe[0]);   
+        write(second_pipe[1], concatenated_string, strlen(concatenated_string)+1); 
         close(second_pipe[1]);   
         exit(0); 
     } 
